@@ -1,4 +1,4 @@
-# Caso 3 Bases De Datos
+# Caso 3 Bases De Datos: Pura Vida DB
 
 ---
 
@@ -23,7 +23,7 @@ Username: CholiRat <br>
 
 <br>
 
-Andrés Rodríguez Brizuela <br>
+Andrés Alejandro Rodríguez Brizuela <br>
 Carné: 2024256537 <br>
 Username: andres080706 <br>
 
