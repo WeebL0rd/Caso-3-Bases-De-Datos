@@ -1,1 +1,12 @@
 Diseño/Caso3_Voto_PuraVida.mwb.bak
+
+# Node modules
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Serverless Framework
+.serverless/
