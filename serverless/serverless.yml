@@ -1,0 +1,17 @@
+service: voto-pura-vida
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+
+functions:
+  hello:
+    handler: handler.hello
+    events:
+      - http:
+          path: hello
+          method: get
+
+
+plugins:
+  - serverless-offline
