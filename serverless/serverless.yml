@@ -11,6 +11,62 @@ functions:
       - http:
           path: hello
           method: get
+    
+  comentar:
+    handler: endpoints/comentar.comentar
+    events:
+      - http:
+          path: comentar
+          method: post
+
+  configurarVotacion:
+    handler: endpoints/configurarVotacion.configurarVotacion
+    events:
+      - http:
+          path: configurarVotacion
+          method: post
+
+  crearActualizarPropuesta:
+    handler: endpoints/crearActualizarPropuesta.crearActualizarPropuesta
+    events:
+      - http:
+          path: crearActualizarPropuesta
+          method: post
+
+  invertir:
+    handler: endpoints/invertir.invertir
+    events:
+      - http:
+          path: invertir
+          method: post
+
+  listarVotos:
+    handler: endpoints/listarVotos.listarVotos
+    events:
+      - http:
+          path: listarVotos
+          method: get
+
+  repartirDividendos:
+    handler: endpoints/repartirDividendos.repartirDividendos
+    events:
+      - http:
+          path: repartirDividendos
+          method: post
+
+  revisarPropuesta:
+    handler: endpoints/revisarPropuesta.revisarPropuesta
+    events:
+      - http:
+          path: revisarPropuesta
+          method: get
+
+  votar:
+    handler: endpoints/votar.votar
+    events:
+      - http:
+          path: votar
+          method: post
 
 
 plugins:
