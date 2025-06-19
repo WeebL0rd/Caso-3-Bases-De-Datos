@@ -1,21 +1,5 @@
 ﻿USE pvDB;
 
--- Reinicios de informacion
-
-DELETE FROM pvDB.pv_targetDemographics;
-DBCC CHECKIDENT ('pvDB.pv_targetDemographics', RESEED, 0);
-DELETE FROM pvDB.pv_demographicTypes;
-DBCC CHECKIDENT ('pvDB.pv_demographicTypes', RESEED, 0);
-DELETE FROM pvDB.pv_currencies;
-DBCC CHECKIDENT ('pvDB.pv_currencies', RESEED, 0);
-DELETE FROM pvDB.pv_nationalities;
-DBCC CHECKIDENT ('pvDB.pv_nationalities', RESEED, 0);
-DELETE FROM pvDB.pv_educationLevels;
-DBCC CHECKIDENT ('pvDB.pv_educationLevels', RESEED, 0);
-DELETE FROM pvDB.pv_countries;
-DBCC CHECKIDENT ('pvDB.pv_countries', RESEED, 0);
-
-
 -- Paises
 INSERT INTO pvDB.pv_countries ([name]) VALUES
 ('Costa Rica'),
