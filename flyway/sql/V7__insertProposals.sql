@@ -4,7 +4,7 @@ USE pvDB;
 
 INSERT INTO pvDB.pv_proposalStatus (proposalStatusID, [name]) VALUES
 (1, 'Pendiente de validacion'),
-(2, 'Aprobado'),
+(2, 'Publicada'),
 (3, 'Rechazado'),
 (4, 'Ejecutando'),
 (5, 'Obsoleto');
