@@ -1,6 +1,7 @@
 use pvDB;
 
 ALTER TABLE pvDB.pv_proposals ADD enableComments BIT default 1;
+ALTER TABLE pvDB.pv_proposals ADD checksum VARBINARY(300);
 
 EXEC sp_rename 'pvDB.pv_proposals.current', 'currentProposal', 'COLUMN';
 EXEC sp_rename 'pvDB.pv_logsSererity.logSererityID', 'logSeverityID', 'COLUMN';
