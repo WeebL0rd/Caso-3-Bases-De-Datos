@@ -34,6 +34,14 @@ INSERT INTO pvDB.pv_proposals (proposalTypeID, proposalStatusID, title, [descrip
 --> Comentarios no habilitados
 (@typeMunicipal, @statusEjec, 'Red de bicicletas compartidas en zonas urbanas', 'Este proyecto busca implementar un sistema de bicicletas compartidas en zonas urbanas de Costa Rica, facilitando el acceso a transporte sostenible y reduciendo la congestión vehicular.', '2024-01-01', CURRENT_TIMESTAMP, 1, '1.0', 0);
 
+DECLARE @proposalNum INT = 10; -- Calcular el checksum de las 10 propuestas anteriores
+WHILE @proposalNum > 0
+BEGIN
+	UPDATE pvDB.pv_proposals
+	SET [checksum] = HASHBYTES('SHA2_256', CONCAT(proposalTypeID, proposalStatusID, title, [description], creationDate, lastUpdate, [version]))
+	WHERE proposalID = @proposalNum;
+	SET @proposalNum = @proposalNum -1;
+END
 
 DECLARE @sugarV1 INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Aplicación para conocer Sugars'); 
 DECLARE @sugarV2 INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Sugar.me'); 
