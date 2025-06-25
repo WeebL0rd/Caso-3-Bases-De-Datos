@@ -60,7 +60,9 @@ VALUES
     ('Error del Sistema', 'Módulo/Función', 'Mensaje de Error', 'Código de Error', NULL),
     ('Acceso de Usuario', 'ID de Usuario', 'Tipo de Acceso', NULL, NULL),
     ('Actualización de Datos', '', 'ID de Registro', 'Campo Modificado', 'Valor Nuevo'),
-	('Actualización de Inversión', 'ID de Investment', 'ID de Registro', 'Valor viejo', 'Valor Nuevo');
+	('Actualización de Inversión', 'ID de Investment', 'ID de Registro', 'Valor viejo', 'Valor Nuevo'),
+	('Voto emitido', 'ID de usuario', 'ID de pregunta', 'ID de propuesta', 'ID de votacion'),
+	('Consulta auditada', 'ID de usuario', '', '', '');
 
 INSERT INTO pvDB.pv_logsSeverity(name)
 VALUES
@@ -76,4 +78,5 @@ VALUES
     ('Motor de Crowdfunding'),
     ('Servicio de Usuarios'),
     ('Backend General'),
-    ('Interfaz de Usuario');
+    ('Interfaz de Usuario'),
+	('Motor de votos');
