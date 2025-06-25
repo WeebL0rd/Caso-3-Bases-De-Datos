@@ -1,6 +1,7 @@
 USE pvDB;
 GO
 
+SET IDENTITY_INSERT pvDB.pv_mediaTypes ON;
 INSERT INTO pvDB.pv_mediaTypes (mediaTypeID, type)
 VALUES
 (1, 'Imagen'),
@@ -8,61 +9,66 @@ VALUES
 (3, 'PDF'),
 (4, 'Docx');
 GO
+SET IDENTITY_INSERT pvDB.pv_mediaTypes OFF;
+GO
 
 INSERT INTO pvDB.pv_documentTypes (documentTypeID, documentType, daysUntilRenewal) VALUES
-(1, 'IdentificaciÛn Oficial', 1460),
-(2, 'PersonerÌa JurÌdica', 365),
+(1, 'Identificaci√≥n Oficial', 1460),
+(2, 'Personer√≠a Jur√≠dica', 365),
 (3, 'Documento de Propuesta', 30),
-(4, 'Anexo de Comentario', NULL),
+(4, 'Anexo de Comentario', 120),
 (5, 'Carta de Aval Municipal', 90); 
 GO
 
 INSERT INTO pvDB.pv_documentStatus (documentStatusID, name) VALUES
 (1, 'Pendiente de revision'),
 (2, 'Aprobado'),
-(3, 'Bajo revisiÛn'),
+(3, 'Bajo revisi√≥n'),
 (4, 'Rechazado'),
 (5, 'Eliminado');
 GO
 
-INSERT INTO pvDB.pv_mediaFile (mediaFileID, mediaTypeID, mediaTypeID) VALUES
-(8, 1, 1),
-(9, 3, 3),
-(10, 3, 3),
-(11, 1, 1),
-(12, 3, 3),
-(13, 1, 1),
-(14, 1, 1),
-(15, 3, 3),
-(16, 4, 4),
-(17, 3, 3),
-(18, 3, 3),
-(19, 3, 3),
-(20, 4, 4),
-(21, 4, 4),
-(22, 3, 3),
-(23, 4, 4),
-(24, 3, 3);
+SET IDENTITY_INSERT pvDB.pv_mediaFile ON;
+INSERT INTO pvDB.pv_mediaFile (mediaFileID, encryptedUrl, mediaTypeID)
+VALUES
+(1, 0xA1B2C3D4E5F60718293A4B5C6D7E8F90, 1),
+(2, 0xB1C2D3E4F5061728394A5B6C7D8E9F01, 3),
+(3, 0xC1D2E3F405061728394A5B6C7D8E9F02, 3),
+(4, 0xD1E2F30405061728394A5B6C7D8E9F03, 1),
+(5, 0xE1F2030405061728394A5B6C7D8E9F04, 3),
+(6, 0xF102030405061728394A5B6C7D8E9F05, 1),
+(7, 0x0102030405061728394A5B6C7D8E9F06, 1),
+(8, 0x102030405061728394A5B6C7D8E9F070, 3),
+(9, 0x2030405061728394A5B6C7D8E9F07081, 4),
+(10, 0x30405061728394A5B6C7D8E9F0708192, 3),
+(11, 0x405061728394A5B6C7D8E9F0708192A3, 3),
+(12, 0x5061728394A5B6C7D8E9F0708192A3B4, 3),
+(13, 0x61728394A5B6C7D8E9F0708192A3B4C5, 4),
+(14, 0x728394A5B6C7D8E9F0708192A3B4C5D6, 4),
+(15, 0x8394A5B6C7D8E9F0708192A3B4C5D6E7, 3),
+(16, 0x94A5B6C7D8E9F0708192A3B4C5D6E7F8, 4),
+(17, 0xA5B6C7D8E9F0708192A3B4C5D6E7F809, 3);
+SET IDENTITY_INSERT pvDB.pv_mediaFile OFF;
 GO
 
-INSERT INTO pvDB.pv_documents (documentID, documentTypeID, mediaFileID, documentStatusID, nombreArchivo, uploadDate, deleted, version, renewalDate) VALUES
-(7, 1, 8, 1, 'ID_LuisGarcia.png', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(8, 1, 9, 1, 'ID_HectorSoto.pdf', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(9, 1, 10, 2, 'ID_JuanPerez.pdf', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(10, 1, 11, 2, 'ID_LauraFernandez.png', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(11, 1, 12, 2, 'ID_MiguelVazquez.pdf', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(12, 1, 13, 3, 'ID_CarlosRodriguez.png', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(13, 1, 14, 4, 'ID_DanielaFlores.png', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(14, 1, 15, 5, 'ID_JorgeCastro.pdf', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
-(15, 2, 16, 2, 'Personeria_MOPT.docx', GETDATE(), 0, '1.0', DATEADD(day, 365, GETDATE())),
-(16, 2, 17, 2, 'Personeria_TechInnovators.pdf', GETDATE(), 0, '1.0', DATEADD(day, 365, GETDATE())),
-(17, 3, 18, 2, 'Propuesta_Semaforos_Inteligentes.pdf', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(18, 3, 19, 2, 'Propuesta_Educacion_Adultos.pdf', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(19, 3, 20, 2, 'Propuesta_SugarMe_v1.docx', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(20, 3, 21, 2, 'Propuesta_SugarMe_v2.docx', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(21, 3, 22, 2, 'Propuesta_Plataforma_Comercio.pdf', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(22, 3, 23, 2, 'Propuesta_Bicicletas_Urbanas.docx', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
-(23, 4, 24, 2, 'Estudio_Uso_Bicicletas.pdf', GETDATE(), 0, '1.0', NULL);
+INSERT INTO pvDB.pv_documents (documentTypeID, mediaFileID, documentStatusID, nombreArchivo, uploadDate, deleted, version, renewalDate) VALUES
+(1, 1, 1, 'ID_LuisGarcia.png', GETDATE(), 0, '1.3', DATEADD(day, 1460, GETDATE())),
+(3, 2, 1, 'ID_HectorSoto.pdf', GETDATE(), 0, '1.6', DATEADD(day, 1460, GETDATE())),
+(3, 3, 2, 'ID_JuanPerez.pdf', GETDATE(), 0, '1.8', DATEADD(day, 1460, GETDATE())),
+(1, 4, 2, 'ID_LauraFernandez.png', GETDATE(), 0, '2.0', DATEADD(day, 1460, GETDATE())),
+(3, 5, 2, 'ID_MiguelVazquez.pdf', GETDATE(), 0, '4.1', DATEADD(day, 1460, GETDATE())),
+(1, 6, 3, 'ID_CarlosRodriguez.png', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
+(1, 7, 4, 'ID_DanielaFlores.png', GETDATE(), 0, '1.2', DATEADD(day, 1460, GETDATE())),
+(3, 8, 5, 'ID_JorgeCastro.pdf', GETDATE(), 0, '1.0', DATEADD(day, 1460, GETDATE())),
+(4, 9, 2, 'Personeria_MOPT.docx', GETDATE(), 0, '1.0', DATEADD(day, 365, GETDATE())),
+(3, 10, 2, 'Personeria_TechInnovators.pdf', GETDATE(), 0, '2.2', DATEADD(day, 365, GETDATE())),
+(3, 11, 2, 'Propuesta_Semaforos_Inteligentes.pdf', GETDATE(), 0, '3.0', DATEADD(day, 30, GETDATE())),
+(3, 12, 2, 'Propuesta_Educacion_Adultos.pdf', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
+(4, 13, 2, 'Propuesta_SugarMe_v1.docx', GETDATE(), 0, '1.1', DATEADD(day, 30, GETDATE())),
+(4, 14, 2, 'Propuesta_SugarMe_v2.docx', GETDATE(), 0, '1.4', DATEADD(day, 30, GETDATE())),
+(3, 15, 2, 'Propuesta_Plataforma_Comercio.pdf', GETDATE(), 0, '1.9', DATEADD(day, 30, GETDATE())),
+(4, 16, 2, 'Propuesta_Bicicletas_Urbanas.docx', GETDATE(), 0, '1.0', DATEADD(day, 30, GETDATE())),
+(3, 17, 2, 'Estudio_Uso_Bicicletas.pdf', GETDATE(), 0, '6.9', DATEADD(day, 15, GETDATE()));
 GO
 
 DECLARE @docID_Luis INT = (SELECT documentID FROM pvDB.pv_documents WHERE nombreArchivo = 'ID_LuisGarcia.png');
@@ -89,27 +95,25 @@ INSERT INTO pvDB.pv_userDocuments (userID, documentID) VALUES
 (3, @docID_Juan), -- (Verified)
 (5, @docID_Laura), -- (Verified)
 (10, @docID_Miguel), -- (Verified)
-(23, @docID_Carlos), -- (Bajo revisiÛn)
+(23, @docID_Carlos), -- (Bajo revisi√≥n)
 (24, @docID_Daniela); -- (Rechazado)
-GO
 
 INSERT INTO pvDB.pv_organizationDocuments (organizationID, documentID) VALUES
-(1, @docID_MOPT), -- MOPT's PersonerÌa JurÌdica
+(1, @docID_MOPT), -- MOPT's Personer√≠a Jur√≠dica
 (2, @docID_TechInc), -- Tech Innovators Inc.'s
-(1, @docID_Semaf), -- Sem·foros inteligentes - MOPT
+(1, @docID_Semaf), -- Sem√°foros inteligentes - MOPT
 (1, @docID_Bicis), -- Bicicletas compartidas - MOPT
 (2, @docID_SugarV2); -- Sugar.me v2 - Tech Innovators Inc.
-GO
 
-DECLARE @propSugarV1 INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'AplicaciÛn para conocer Sugars');
+DECLARE @propSugarV1 INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Aplicaci√≥n para conocer Sugars');
 DECLARE @propSugarV2 INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Sugar.me');
-DECLARE @propSemaf INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Sem·foros inteligentes en San JosÈ');
-DECLARE @propEduc INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Programa de educaciÛn para adultos mayores de secundaria en zonas rurales');
-DECLARE @propComercio INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Plataforma de comercio para pequeÒos productores');
+DECLARE @propSemaf INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Sem√°foros inteligentes en San Jos√©');
+DECLARE @propEduc INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Programa de educaci√≥n para adultos mayores de secundaria en zonas rurales');
+DECLARE @propComercio INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Plataforma de comercio para peque√±os productores');
 DECLARE @propBicis INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Red de bicicletas compartidas en zonas urbanas');
 
 INSERT INTO pvDB.pv_proposalDocuments (proposalID, documentID) VALUES
-(@propSemaf, @docID_Semaf), -- Sem·foros proposal
+(@propSemaf, @docID_Semaf), -- Sem√°foros proposal
 (@propEduc, @docID_Educ), -- Adult Education proposal
 (@propSugarV1, @docID_SugarV1), -- Sugar.me v1 proposal
 (@propSugarV2, @docID_SugarV2), -- Sugar.me v2 proposal
@@ -117,22 +121,24 @@ INSERT INTO pvDB.pv_proposalDocuments (proposalID, documentID) VALUES
 (@propBicis, @docID_Bicis); -- Bike Sharing proposal
 GO
 
+SET IDENTITY_INSERT pvDB.pv_entityType ON;
 INSERT INTO pvDB.pv_entityType (entityTypeID, entity) VALUES
 (1, 'Ciudadano'),
-(2, 'OrganizaciÛn'),
+(2, 'Organizaci√≥n'),
 (3, 'Gobierno'),
 (4, 'Inversionista'),
 (5, 'Aceleradora'),
 (6, 'Incubadora'),
-(7, 'AuditorÌa');
+(7, 'Auditor√≠a');
+SET IDENTITY_INSERT pvDB.pv_entityType OFF;
 GO
 
-DECLARE @docTypePersoneria INT = (SELECT documentTypeID FROM pvDB.pv_documentTypes WHERE documentType = 'PersonerÌa JurÌdica');
+DECLARE @docTypePersoneria INT = (SELECT documentTypeID FROM pvDB.pv_documentTypes WHERE documentType = 'Personer√≠a Jur√≠dica');
 DECLARE @docTypeCartaAval INT = (SELECT documentTypeID FROM pvDB.pv_documentTypes WHERE documentType = 'Carta de Aval Municipal');
-INSERT INTO pvDB.pv_requiredDocuments (requiredDocumentID, documentTypeID, entityTypeID, mandatory) VALUES
-(1, @docTypePersoneria, 6, 1), -- Incubadora
-(2, @docTypePersoneria, 2, 1), -- Con fines de lucro
-(3, @docTypePersoneria, 2, 0), -- Sin fines de lucro
-(4, @docTypeCartaAval, 3, 1), -- Ministerios
-(5, @docTypeCartaAval, 3, 0); -- Municipalidades
+INSERT INTO pvDB.pv_requiredDocuments (documentTypeID, entityTypeID, mandatory) VALUES
+(@docTypePersoneria, 6, 1), -- Incubadora
+(@docTypePersoneria, 2, 1), -- Con fines de lucro
+(@docTypePersoneria, 2, 0), -- Sin fines de lucro
+(@docTypeCartaAval, 3, 1), -- Ministerios
+(@docTypeCartaAval, 3, 0); -- Municipalidades
 GO
