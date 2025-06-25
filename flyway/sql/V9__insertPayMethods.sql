@@ -1,9 +1,11 @@
 -- Payment methods
+USE pvDB
+GO
 
-INSERT INTO pvDB.pv_payMethod (name, apiURL, secretKey, "key", logoIconURL, "enabled") VALUES
-('PayPal', 'https://api.paypal.com/v1/', HASHBYTES('SHA2_256', 'paypal_secret_key_123'), 'paypal_public_key_abc', 'https://example.com/paypal_logo.png', 1),
-('Visa', 'https://api.visa.com/checkout/', HASHBYTES('SHA2_256', 'visa_secret_key_456'), 'visa_public_key_def', 'https://example.com/visa_logo.png', 1),
-('Mastercard', 'https://api.mastercard.com/gateway/', HASHBYTES('SHA2_256', 'mc_secret_key_789'), 'mc_public_key_ghi', 'https://example.com/mastercard_logo.png', 1);
+INSERT INTO pvDB.pv_payMethod (payMethodID, name, apiURL, secretKey, "key", logoIconURL, "enabled") VALUES
+(1,'PayPal', 'https://api.paypal.com/v1/', HASHBYTES('SHA2_256', 'paypal_secret_key_123'), 'paypal_public_key_abc', 'https://example.com/paypal_logo.png', 1),
+(2,'Visa', 'https://api.visa.com/checkout/', HASHBYTES('SHA2_256', 'visa_secret_key_456'), 'visa_public_key_def', 'https://example.com/visa_logo.png', 1),
+(3,'Mastercard', 'https://api.mastercard.com/gateway/', HASHBYTES('SHA2_256', 'mc_secret_key_789'), 'mc_public_key_ghi', 'https://example.com/mastercard_logo.png', 1);
 GO
 
 
