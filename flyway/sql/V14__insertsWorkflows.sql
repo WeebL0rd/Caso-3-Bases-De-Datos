@@ -1,36 +1,40 @@
 USE pvDB;
 GO
 
+SET IDENTITY_INSERT pvDB.pv_workflowTypes ON;
 INSERT INTO pvDB.pv_workflowTypes (workflowTypeID, type) VALUES
-(1, 'Verificaci髇 de Documento de Usuario'), -- Verificaci髇 de documentos subidos por usuarios
-(2, 'Verificaci髇 de Documento de Organizaci髇'); -- Verificaci髇 de documentos de organizaciones
+(1, 'Verificaci贸n de Documento de Usuario'), -- Verificaci贸n de documentos subidos por usuarios
+(2, 'Verificaci贸n de Documento de Organizaci贸n'); -- Verificaci贸n de documentos de organizaciones
+SET IDENTITY_INSERT pvDB.pv_workflowTypes OFF;
 GO
 
+SET IDENTITY_INSERT pvDB.pv_workflows ON;
 INSERT INTO pvDB.pv_workflows (workflowID, name, description, endpointUrl, enabled, workflowTypeID) VALUES
-(3, 'Flujo Verificaci髇 Documento Usuario', '', '', 1, 1),
-(4, 'Flujo Verificaci髇 Documento Organizaci髇', '', '', 1, 2);
+(1, 'Flujo Verificaci贸n Documento Usuario', '', '', 1, 1),
+(2, 'Flujo Verificaci贸n Documento Organizaci贸n', '', '', 1, 2);
+SET IDENTITY_INSERT pvDB.pv_workflows OFF;
 GO
 
-INSERT INTO pvDB.pv_workflowParameters (parameterID, workflowID, parameter, dataType, required, description, defaultValue) VALUES
-(3, 3, 'ApproversRequired', 'STRING', 1, 'N鷐ero de aprobadores requerido', '1'),
-(4, 3, 'AutoApproveDays', 'STRING', 1, 'D韆s para autoaprobaci髇 autom醫ica', '7'),
-(5, 4, 'ApproversRequired', 'STRING', 1, 'N鷐ero de aprobadores requerido (revisi髇 dual)', '2'),
-(6, 4, 'AutoApproveDays', 'STRING', 1, 'D韆s para autoaprobaci髇 autom醫ica', '14');
+INSERT INTO pvDB.pv_workflowParameters (workflowID, parameter, dataType, required, description, defaultValue) VALUES
+(1, 'ApproversRequired', 'STRING', 1, 'N煤mero de aprobadores requerido', '1'),
+(1, 'AutoApproveDays', 'STRING', 1, 'D铆as para autoaprobaci贸n autom谩tica', '7'),
+(2, 'ApproversRequired', 'STRING', 1, 'N煤mero de aprobadores requerido (revisi贸n dual)', '2'),
+(2, 'AutoApproveDays', 'STRING', 1, 'D铆as para autoaprobaci贸n autom谩tica', '14');
 GO
 
-INSERT INTO pvDB.pv_documentTypeWorkflows (documentTypeWorkflowID, documentTypeID, workflowID, deleted, lastUpdate) VALUES
-(3, 1, 3, 0, GETDATE()), -- Documentos de Identificaci髇 Oficial
-(4, 2, 4, 0, GETDATE()); -- Documentos de Personer韆 Jur韉ica
+INSERT INTO pvDB.pv_documentTypeWorkflows (documentTypeID, workflowID, deleted, lastUpdate) VALUES
+(1, 1, 0, GETDATE()), -- Documentos de Identificaci贸n Oficial
+(2, 2, 0, GETDATE()); -- Documentos de Personer铆a Jur铆dica
 GO
 
-INSERT INTO pvDB.pv_workflowHeaders (headerID, workflowID, name, value) VALUES
-(1, 1, 'Luis Revisi髇', 'Pendiente de revisi髇'),
-(2, 1, 'Hector Revisi髇', 'Pendiente de revisi髇'),
-(3, 1, 'Juan Aprobado', 'Aprobado'),
-(4, 1, 'Laura Aprobado', 'Aprobado'),
-(5, 1, 'Miguel Aprobado', 'Aprobado'),
-(6, 1, 'Carlos Revisi髇', 'Revisi髇 Escalada'),
-(7, 1, 'Daniela Rechazado', 'Rechazado'),
-(8, 2, 'MOPT Revision', 'Revision completada'),
-(9, 2, 'TechInnovators Revision', 'Revision completada');
+INSERT INTO pvDB.pv_workflowHeaders (workflowID, name, value) VALUES
+(1, 'Luis Revisi贸n', 'Pendiente de revisi贸n'),
+(1, 'Hector Revisi贸n', 'Pendiente de revisi贸n'),
+(1, 'Juan Aprobado', 'Aprobado'),
+(1, 'Laura Aprobado', 'Aprobado'),
+(1, 'Miguel Aprobado', 'Aprobado'),
+(1, 'Carlos Revisi贸n', 'Revisi贸n Escalada'),
+(1, 'Daniela Rechazado', 'Rechazado'),
+(2, 'MOPT Revision', 'Revision completada'),
+(2, 'TechInnovators Revision', 'Revision completada');
 GO
