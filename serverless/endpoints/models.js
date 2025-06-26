@@ -103,6 +103,43 @@ const UserOrganization = sequelize.define('pv_userOrganization', {
   organizationID: { type: DataTypes.INTEGER, allowNull: false, field: 'organizationID' }
 }, { tableName: 'pv_userOrganization', timestamps: false });
 
+  const confirmedVotes = sequelize.define('pv_confirmedVotes', {
+    confirmedVoteID: { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true, field: 'confirmedVoteID' },
+    optionVoteID:    { type: DataTypes.INTEGER, allowNull: false },
+    weight:          { type: DataTypes.DECIMAL(5, 2), allowNull: false },
+    encryptedVote:   { type: DataTypes.BLOB, allowNull: false },
+    tokenID:         { type: DataTypes.BIGINT, allowNull: false },
+    checksum:        { type: DataTypes.BLOB, allowNull: false }
+  }, {tableName: 'pv_confirmedVotes', timestamps: false });
+
+  const tokens = sequelize.define('pv_tokens', {
+    tokenID:      { type: DataTypes.BIGINT, primaryKey: true, autoIncrement: true, field: 'tokenID' },
+    tokenHash:    { type: DataTypes.BLOB, allowNull: false, field: 'tokenHash' },
+    creationDate: { type: DataTypes.DATE, allowNull: false, field: 'creationDate' },
+    postDate:     { type: DataTypes.DATE, allowNull: false, field: 'postDate' },
+    isUsed:       { type: DataTypes.BOOLEAN, allowNull: false, field: 'isUsed' }
+  }, {tableName: 'pv_tokens', timestamps: false });
+
+const UserDemographics = sequelize.define('pv_userDemographics', {
+    userDemographicID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, field: 'userDemographicID' },
+    value:             { type: DataTypes.STRING(100), allowNull: false, field: 'tokenHash' },
+    userID:            { type: DataTypes.INTEGER, allowNull: false, field: 'userID' },
+    demographicTypeID: { type: DataTypes.INTEGER, allowNull: false, field: 'demographicTypeID' },
+    creationDate:      { type: DataTypes.DATE, allowNull: false, field: 'creationDate' },
+    deleted:           { type: DataTypes.BOOLEAN, allowNull: false, field: 'deleted' }
+  }, {tableName: 'pv_userDemographics', timestamps: false });
+  
+const Users = sequelize.define('pv_users', {
+  userID:       { type: DataTypes.INTEGER,       primaryKey: true, autoIncrement: true, field: 'userID' },
+  name:         { type: DataTypes.STRING(60),    allowNull: false, field: 'name' },
+  lastName:     { type: DataTypes.STRING(60),    allowNull: false, field: 'lastName' },
+  email:        { type: DataTypes.STRING(80),    allowNull: false, field: 'email' },
+  password:     { type: DataTypes.BLOB,          allowNull: false, field: 'password' },
+  creationDate: { type: DataTypes.DATE,          allowNull: false, field: 'creationDate' },
+  statusID:     { type: DataTypes.TINYINT,       allowNull: false, field: 'statusID' }
+}, {tableName: 'pv_users', timestamps: false});
+
+
 module.exports = {
   sequelize,
   Op,
@@ -115,5 +152,9 @@ module.exports = {
   VoteDemographic,
   UserProposal,
   OrgProposal,
-  UserOrganization
+  UserOrganization,
+  confirmedVotes,
+  tokens,
+  UserDemographics,
+  Users
 };
