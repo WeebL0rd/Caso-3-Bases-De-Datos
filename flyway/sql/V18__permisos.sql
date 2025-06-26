@@ -3,17 +3,41 @@ USE pvDB;
 -- Revocar todos los permisos a todos los usuarios públicos
 REVOKE SELECT, INSERT, UPDATE, DELETE, EXECUTE ON SCHEMA::pvDB FROM public;
 
-CREATE LOGIN userSP WITH PASSWORD = 'VotoPuravida'
-CREATE LOGIN userORM WITH PASSWORD = 'VotoPuravida'
-CREATE LOGIN superUser WITH PASSWORD = 'MegaPassword123'
+IF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'userSP')
+    CREATE LOGIN userSP WITH PASSWORD = 'VotoPuravida';
+GO
 
-CREATE USER userSP FOR LOGIN userSP
-CREATE USER superUser FOR LOGIN superUser
-CREATE USER userORM FOR LOGIN userORM
+IF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'userORM')
+    CREATE LOGIN userORM WITH PASSWORD = 'VotoPuravida';
+GO
 
-CREATE ROLE usoDeSPs
-CREATE ROLE allowRead
-CREATE ROLE ormManipulation
+IF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'superUser')
+    CREATE LOGIN superUser WITH PASSWORD = 'MegaPassword123';
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'userSP')
+    CREATE USER userSP FOR LOGIN userSP;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'userORM')
+    CREATE USER userORM FOR LOGIN userORM;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'superUser')
+    CREATE USER superUser FOR LOGIN superUser;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'usoDeSPs')
+    CREATE ROLE usoDeSPs;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'allowRead')
+    CREATE ROLE allowRead;
+GO
+
+IF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'ormManipulation')
+    CREATE ROLE ormManipulation;
+GO
 
 -- Otorgar permisos de lectura al userSP con permisos elevados
 GRANT SELECT ON SCHEMA::pvDB TO allowRead
