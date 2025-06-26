@@ -29,12 +29,6 @@ DECLARE @USACountryID INT;
 SELECT @CostaRicaCountryID = countryID FROM pvDB.pv_countries WHERE name = 'Costa Rica';
 SELECT @USACountryID = countryID FROM pvDB.pv_countries WHERE name = 'Estados Unidos';
 
-INSERT INTO pvDB.pv_currencies (name, acronym, symbol, countryID)
-VALUES ('Colón Costarricense', 'CRC', '₡', @CostaRicaCountryID);
-
-INSERT INTO pvDB.pv_currencies (name, acronym, symbol, countryID)
-VALUES ('Dólar Estadounidense', 'USD', '$', @USACountryID);
-
 DECLARE @CRC_currencyID INT;
 DECLARE @USD_currencyID INT;
 DECLARE @today DATE = GETDATE();
