@@ -10,6 +10,16 @@ const defineConfig = {
 };
 const sequelize = new Sequelize('pvDB', 'userORM', 'VotoPuravida', defineConfig);
 
+// Modelos definidos con el esquema 'pvDB'
+const User = sequelize.define('User', {
+  userID: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
+  name: {type: DataTypes.STRING(60), allowNull: false },
+  lastName: {type: DataTypes.STRING(60), allowNull: false},
+  email: {type: DataTypes.STRING(80), allowNull: false, unique: true},
+  statusID: {type: DataTypes.TINYINT,allowNull: false}
+  },
+  { tableName: 'pv_users', timestamps: false});
+
 // User sessions
 const UserSession = sequelize.define('pv_userSessions', {
   userSessionID: { type: DataTypes.INTEGER, primaryKey: true, field: 'userSessionID' },
@@ -140,19 +150,75 @@ const Users = sequelize.define('pv_users', {
 }, {tableName: 'pv_users', timestamps: false});
 
 
+
+const LogsSeverity = sequelize.define('LogsSeverity', {
+  logSeverityID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING(45), allowNull: false }
+}, {
+  tableName: 'pv_logsSeverity',
+  timestamps: false
+});
+
+const LogSources = sequelize.define('LogSources', {
+  logSourcesID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING(45), allowNull: false }
+}, {
+  tableName: 'pv_logSources',
+  timestamps: false
+});
+
+
+const LogType = sequelize.define('LogType', {
+  logTypesID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  name: { type: DataTypes.STRING(45), allowNull: false },
+  reference1Description: { type: DataTypes.STRING(75), allowNull: true },
+  reference2Description: { type: DataTypes.STRING(75), allowNull: true },
+  value1Description: { type: DataTypes.STRING(75), allowNull: true },
+  value2Description: { type: DataTypes.STRING(75), allowNull: true }
+}, {
+  tableName: 'pv_logTypes',
+  timestamps: false
+});
+
+
+const Log = sequelize.define('Log', {
+  log_id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  description: { type: DataTypes.STRING(200), allowNull: false },
+  postTime: { type: DataTypes.DATE, allowNull: false, defaultValue: Sequelize.NOW },
+  computer: { type: DataTypes.STRING(75), allowNull: false },
+  username: { type: DataTypes.STRING(50), allowNull: false },
+  trace: { type: DataTypes.STRING(100), allowNull: true },
+  reference1Id: { type: DataTypes.BIGINT, allowNull: true },
+  reference2Id: { type: DataTypes.BIGINT, allowNull: true },
+  value1: { type: DataTypes.STRING(180), allowNull: true },
+  value2: { type: DataTypes.STRING(180), allowNull: true },
+  checksum: { type: DataTypes.BLOB('long'), allowNull: false },
+  logSeverityID: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'LogSeverity', key: 'logSeverityID' }},
+  logTypesID: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'LogType', key: 'logTypesID' } },
+  logSourcesID: { type: DataTypes.INTEGER, allowNull: false, references: { model: 'LogSource',key: 'logSourcesID' } }
+}, {
+  tableName: 'pv_logs',
+  timestamps: false // No createdAt/updatedAt, 'postTime' serves this purpose
+});
+
+UserSession.belongsTo(User, { foreignKey: 'userID' });
+User.hasMany(UserSession, { foreignKey: 'userID' });
+
+Log.belongsTo(LogSeverity, { foreignKey: 'logSeverityID' });
+LogSeverity.hasMany(Log, { foreignKey: 'logSeverityID' });
+
+Log.belongsTo(LogSource, { foreignKey: 'logSourcesID' });
+LogSource.hasMany(Log, { foreignKey: 'logSourcesID' });
+
+Log.belongsTo(LogType, { foreignKey: 'logTypesID' });
+LogType.hasMany(Log, { foreignKey: 'logTypesID' });
+
 module.exports = {
-  sequelize,
-  Op,
-  UserSession,
-  Proposal,
-  Comment,
-  Voting,
-  VoteQuestion,
-  VoteOption,
-  VoteDemographic,
-  UserProposal,
-  OrgProposal,
-  UserOrganization,
+  sequelize, Op,
+  User, Log, LogSeverity, LogSource, LogType,
+  UserSession, Proposal, Comment,
+  Voting, VoteOption, VoteDemographic,
+  UserProposal, OrgProposal, UserOrganization,
   confirmedVotes,
   tokens,
   UserDemographics,
