@@ -71,3 +71,8 @@ VALUES
     ('Backend General'),
     ('Interfaz de Usuario'),
 	('Motor de votos');
+
+INSERT INTO pvDB.pv_owningEntityTypes (owningEntityTypeName) 
+VALUES
+	('Usuario'), 
+	('Organización');
