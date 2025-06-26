@@ -12,5 +12,8 @@
   "devDependencies": {
     "serverless": "^4.16.1",
     "serverless-offline": "^14.4.0"
+  },
+  "dependencies": {
+    "mssql": "^11.0.1"
   }
 }
