@@ -1,44 +1,124 @@
 // endpoints/configurarVotacion.js
 require('dotenv').config();
-const { sequelize, Proposal, Voting, VoteOption, VoteDemographic, UserProposal, OrgProposal, UserOrganization } = require('./models');
+const crypto = require('crypto');
+const {
+  sequelize,
+  UserProposal,
+  OrgProposal,
+  UserOrganization,
+  Voting,
+  VoteQuestion,
+  VoteOption,
+  VoteDemographic
+} = require('./models');
 
 module.exports.configurarVotacion = async (event) => {
-  const { userID, proposalID, startDate, endDate, options, demographics } = JSON.parse(event.body || '{}');
-  if (!userID || !proposalID || !startDate || !endDate || !Array.isArray(options) || !Array.isArray(demographics)) {
-    return { statusCode: 400, body: JSON.stringify({ error: 'Faltan parámetros: userID, proposalID, startDate, endDate, options[] y demographics[].' }) };
+  const {
+    userID,
+    proposalID,
+    topic,
+    startDate,
+    endDate,
+    questions,
+    demographics,
+    voteTypeID,
+    voteStatusID,
+    approvalTypeID,
+    approvalCriteria,
+    strictDemographic
+  } = JSON.parse(event.body || '{}');
+
+  if (
+    !userID || !proposalID || !topic || !startDate || !endDate ||
+    !Array.isArray(questions) || questions.length < 1 ||
+    !Array.isArray(demographics) ||
+    !voteTypeID || !voteStatusID || !approvalTypeID ||
+    typeof approvalCriteria !== 'string' ||
+    typeof strictDemographic !== 'boolean'
+  ) {
+    return { statusCode: 400, body: JSON.stringify({ error: 'Parámetros faltantes o inválidos.' }) };
   }
 
   try {
     await sequelize.authenticate();
 
-    // 1) Permisos: autor usuario u organización
-    let hasPermission = false;
-    const isUserAuthor = await UserProposal.findOne({ where: { proposalID, userID } });
-    if (isUserAuthor) hasPermission = true;
+    // Verificar permisos
+    let hasPermission = !!(await UserProposal.findOne({ where: { proposalID, userID } }));
     if (!hasPermission) {
-      const userOrgs = await UserOrganization.findAll({ where: { userID } });
-      const orgIDs = userOrgs.map(uo => uo.organizationID);
+      const userOrgs = (await UserOrganization.findAll({ where: { userID } }))
+        .map(o => o.organizationID);
       const orgProps = await OrgProposal.findAll({ where: { proposalID } });
-      if (orgProps.some(op => orgIDs.includes(op.organizationID))) hasPermission = true;
+      hasPermission = orgProps.some(o => userOrgs.includes(o.organizationID));
     }
     if (!hasPermission) {
-      return { statusCode: 403, body: JSON.stringify({ error: 'Sin permisos para configurar esta propuesta.' }) };
+      return { statusCode: 403, body: JSON.stringify({ error: 'Sin permisos para esta propuesta.' }) };
     }
 
-    // 2) Crear registro en pv_votes
-    const voting = await Voting.create({ proposalID, startDate: new Date(startDate), endDate: new Date(endDate), commentsEnabled: true });
+    const now = new Date();
 
-    // 3) Opciones de voto
-    const opts = options.map(text => ({ voteQuestionID: voting.voteID, optionText: text, creationDate: new Date(), enabled: true }));
-    await VoteOption.bulkCreate(opts);
+    // Crear votación
+    const vote = await Voting.create({
+      topic,
+      voteTypeID,
+      voteStatusID,
+      proposalID,
+      approvalTypeID,
+      approvalCriteria,
+      strictDemographic,
+      startDate:      new Date(startDate),
+      endDate:        new Date(endDate),
+      creationDate:   now,
+      lastUpdate:     now,
+      commentsEnabled: true
+    });
 
-    // 4) Demográficos meta
-    const demLinks = demographics.map(id => ({ voteID: voting.voteID, targetDemographicID: id }));
+    // Preguntas y opciones
+    for (const q of questions) {
+      if (!q.question || !Array.isArray(q.options) || q.options.length < 2) {
+        throw new Error('Cada pregunta debe tener texto y al menos dos opciones.');
+      }
+      const qChecksum = Buffer.from(
+        crypto.createHash('sha256').update(q.question).digest('hex'),
+        'hex'
+      );
+      const qRec = await VoteQuestion.create({
+        voteID:         vote.voteID,
+        question:       q.question,
+        answerQuantity: q.options.length,
+        creationDate:   now,
+        deleted:        Buffer.from([0]),
+        checksum:       qChecksum
+      });
+
+      const opts = q.options.map((opt, i) => ({
+        voteQuestionID: qRec.voteQuestionID,
+        optionText:     opt,
+        optionNumber:   i + 1,
+        value:          opt,
+        creationDate:   now,
+        enabled:        true,
+        deleted:        Buffer.from([0]),
+        checksum:       Buffer.from(
+          crypto.createHash('sha256').update(opt).digest('hex'),
+          'hex'
+        )
+      }));
+      await VoteOption.bulkCreate(opts);
+    }
+
+    // Demográficos (ahora con creationDate y deleted)
+    const demLinks = demographics.map(id => ({
+      voteID:              vote.voteID,
+      targetDemographicID: id,
+      creationDate:        now,
+      deleted:             false
+    }));
     await VoteDemographic.bulkCreate(demLinks);
 
-    return { statusCode: 201, body: JSON.stringify({ voteID: voting.voteID }) };
+    return { statusCode: 201, body: JSON.stringify({ voteID: vote.voteID }) };
+
   } catch (err) {
-    console.error('Error en configurarVotacion:', err);
+    console.error('Error in configurarVotacion:', err);
     return { statusCode: 500, body: JSON.stringify({ error: 'Error interno al configurar votación.' }) };
   }
 };

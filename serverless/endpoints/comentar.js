@@ -41,3 +41,4 @@ module.exports.comentar = async (event) => {
     return { statusCode: 500, body: JSON.stringify({ error: 'Error interno al procesar comentario.' }) };
   }
 };
+
