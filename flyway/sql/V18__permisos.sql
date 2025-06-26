@@ -22,3 +22,10 @@ GRANT VIEW DEFINITION ON SCHEMA::pvDB TO allowRead
 GRANT EXECUTE ON SCHEMA::pvDB TO usoDeSPs
 -- Otorgar permisos que necesita el userSP para utilizar los ORM
 GRANT SELECT, INSERT, UPDATE ON SCHEMA::pvDB TO ormManipulation;
+
+
+ALTER ROLE usoDeSPs ADD MEMBER userSP;
+ALTER ROLE ormManipulation ADD MEMBER userORM;
+ALTER ROLE usoDeSPs ADD MEMBER superUser;
+ALTER ROLE allowRead ADD MEMBER superUser;
+ALTER ROLE ormManipulation ADD MEMBER superUser;
