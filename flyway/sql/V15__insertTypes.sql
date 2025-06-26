@@ -20,9 +20,6 @@ INSERT INTO pvDB.pv_paymentStatuses (paymentStatusID, "name") VALUES
 (1, 'Pendiente'),
 (2, 'Confirmado');
 
-INSERT INTO pvDB.pv_countries (name) VALUES ('Costa Rica');
-INSERT INTO pvDB.pv_countries (name) VALUES ('Estados Unidos');
-
 DECLARE @CostaRicaCountryID INT;
 DECLARE @USACountryID INT;
 
