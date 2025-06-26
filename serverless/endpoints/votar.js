@@ -1,10 +1,10 @@
 require('dotenv').config();
-const { sequelize, Op, UserSession, Users, Proposal, Voting, confirmedVotes, tokens, UserDemographics, VoteDemographic } = require('./models');
-
+const crypto = require('crypto');
+const { sequelize, Op, UserSession, Users, Proposal, Voting, confirmedVotes, VoteQuestion, VoteOption, tokens, UserDemographics, VoteDemographic, Log, LogSources, LogType, LogSeverity } = require('./models');
 
 module.exports.votar = async (event) => {
-	const { userID, proposalID, voteID, voteToken, decision } = JSON.parse(event.body || '{}');
-	if (!userID || !proposalID || !voteID || !voteToken || !decision ) {
+	const { userID, proposalID, voteID, voteToken, questionID, decision } = JSON.parse(event.body || '{}');
+	if (!userID || !proposalID || !voteID || !voteToken || !questionID, || !decision ) {
 		return { statusCode: 400, body: JSON.stringify({ error: 'Faltan parámetros' }) };
 	}
 	
@@ -40,9 +40,8 @@ module.exports.votar = async (event) => {
 		  return { statusCode: 404, body: JSON.stringify({ error: 'La votacion no existe.' }) };
 		}
 		// Verificar que el token no este utilizado
-		const encryptedToken = crypto.createHash('sha256');
-		encryptedToken.update(voteToken);
-		return encryptedToken.digest(); 
+		const encryptedToken = crypto.createHash('sha256').update(voteToken).digest();  
+ 
 		const token = await tokens.findOne({
 		  where: { voteToken: tokenHash }
 		});
@@ -50,27 +49,45 @@ module.exports.votar = async (event) => {
 		  return { statusCode: 405, body: JSON.stringify({ error: 'Este token ya fue usado.' }) };
 		}
 		
-		//Verificar userDemographic con voteDemographic
-		const checksum = '0x01'
-		const [userDemo, voteDemo] = await Promise.all([
-		  UserDemographic.findOne({ where: { userID } }),
-		  Proposal.findOne({ where: {proposalID} }),
-		  VoteDemographic.findOne({ where: { voteID } })
-		]);
-		if (userDemo.demographicTypeID !== voteDemo.targetDemographicID) {
-		  return {
-			statusCode: 406, body: JSON.stringify({ error: 'No tiene permisos de votar por sus características demográficas.' })};
-		}
+		const question = await VoteQuestion.findOne({
+		  where: { questionID }
+		const optionID = await VoteOption.findOne({
+		  where: { decision }
+		
+		const checksum = fn('concat', optionID, votacion.weight, , encryptedToken)
 		
 		const newComment = await confirmedVotes.create({
-        optionVoteID: 1,
-        weight: 1,
-        encryptedVote: checksum,
-        tokenID: voteToken,
+        optionVoteID: optionID,
+        weight: votacion.weight,
+        encryptedVote: encryptedToken,
+        tokenID: encryptedToken,
         checksum
 		});
+		
+		const logSourceID = await LogSources.findOne({
+		where: { name: 'Motor de votos' }
+		const logTypeID = await LogType.findOne({
+		where: { name: 'Voto emitido' }
+		const logSeverityID = await LogSeverity.findOne({
+		where: { name: 'Informativo' }
+		
+		checksum = fn('concat', 'Voto agregado en ' + votacion.topic, new Date(), 'PC de ' + usuario.name + usuario.lastname, usuario.name + usuario.lastname, userID, questionID, proposalID, voteID, logSeverityID, logTypeID, logSourceID)
 	
-	
+		const newLog = await Logs.create({
+	    description: 'Voto agregado en ' + votacion.topic,
+	    postTime: new Date(),
+        computer: 'PC de ' + usuario.name + usuario.lastname,
+        username: usuario.name + usuario.lastname,
+        trace: ' ',
+        referenceId1: userID,
+        referenceId2: questionID,
+        value1: proposalID,
+        value2: voteID,
+        checksum,
+        logSeverityID: logSeverityID,
+        logTypesID: logTypeID,
+        logSourcesID: logSeverityID
+		});
 	
 		return {
 		statusCode: 200,
