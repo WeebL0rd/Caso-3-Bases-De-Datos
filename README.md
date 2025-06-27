@@ -23,6 +23,11 @@ Username: CholiRat <br>
 
 <br>
 
+Andrés Rodríguez Brizuela <br>
+Carné: 2024256537 <br>
+Username: andres080706 <br>
+
+<br>
 
 # ENDPOINTS
 ## crearActualizarPropuesta
