@@ -2,17 +2,23 @@
 GO
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 --------------------------------------------------------------------------------
 -- 1) DECLARACIÓN DE VARIABLES DE PROPOSALS Y DEMOGRAPHICS
 --------------------------------------------------------------------------------
 DECLARE
   -- IDs de propuestas
 =======
+=======
+>>>>>>> Stashed changes
 SELECT * 
   FROM pvDB.pv_proposals;
 --  Declaración de variables de propuestas y demographics
 DECLARE
   -- Propuestas
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
   @pSem      INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Semáforos inteligentes en San José'),
   @pEduc     INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Programa de educación para adultos mayores de secundaria en zonas rurales'),
@@ -20,7 +26,11 @@ DECLARE
   @pBicis    INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Red de bicicletas compartidas en zonas urbanas'),
   @pComercio INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Plataforma de comercio para pequeños productores'),
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   @pIlum     INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Instalación de iluminación en la Ruta 32'),
+=======
+  @pIlum     INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Aplicación para conocer Sugars'),
+>>>>>>> Stashed changes
 =======
   @pIlum     INT = (SELECT proposalID FROM pvDB.pv_proposals WHERE title = 'Aplicación para conocer Sugars'),
 >>>>>>> Stashed changes
@@ -52,6 +62,7 @@ DECLARE
   @vsOpen   INT = (SELECT voteStatusID  FROM pvDB.pv_voteStatus            WHERE [name]='Abierta'),
   @apTime   INT = (SELECT approvalTypeID FROM pvDB.pv_approvalCriteriaTypes WHERE [type]='Tiempo');
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 --------------------------------------------------------------------------------
 -- 2) INSERCIÓN DE VOTACIONES, PREGUNTAS, OPCIONES Y DEMOGRAPHICS (a–f)
@@ -158,6 +169,8 @@ CLOSE voteCursor;
 DEALLOCATE voteCursor;
 DEALLOCATE tokenCursor;
 =======
+=======
+>>>>>>> Stashed changes
 -- ======================================================
 -- a) Semáforos inteligentes en San José
 -- ======================================================
@@ -467,5 +480,8 @@ VALUES
 
 INSERT INTO pvDB.pv_voteDemographics(voteID,targetDemographicID)
 VALUES (@vI3,@CR),(@vI3,@24plus);
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 GO
