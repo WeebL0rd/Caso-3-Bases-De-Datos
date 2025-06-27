@@ -107,6 +107,53 @@ module.exports.crearActualizarPropuesta = async (event) => {
     }
 		
 };
+
+/*
+E: Un JSON
+S: Un resultMessage
+Esta función ejecuta el SP y retorna el resultado
+*/ 
+async function callStoredProcedure(data) {
+    const proposalID = data.proposalID;
+    const isUser = data.isUser;
+    const userID = data.userID;
+    const organizationID = data.organizationID;
+    const proposalTitle = data.proposalTitle;
+    const proposalDesc = data.proposalDesc;
+    const proposalType = data.proposalType;
+	const proposalComments = data.proposalComments;
+	const proposalDocuments = data.proposalDocuments;
+	const proposalDemographics = data.proposalDemographics;
+
+    try {
+        const pool = await sql.connect(config);
+
+        const request = pool.request();
+
+        request
+        .input('proposalID', sql.Int, proposalID)
+        .input('isUser', sql.Bit, isUser)
+        .input('userID', sql.Int, userID)
+        .input('organizationID', sql.Int, organizationID)
+		.input('proposalTitle', sql.VARCHAR(75), proposalTitle)
+        .input('proposalDesc', sql.VARCHAR(300), proposalDesc)
+        .input('proposalType', sql.VARCHAR(30), proposalType)
+        .input('proposalComments', sql.Bit, proposalComments)
+		.input('documents', sql.NVARCHAR(MAX), proposalDocuments)
+        .input('demographics', sql.NVARCHAR(MAX), proposalDemographics)
+        .output('ResultMessage', sql.VarChar(100));
+
+        const result = await request.execute('[pvDB].[crearActualizarPropuesta]');
+        return result.output;
+        
+    } catch (err) {
+        console.error("Error ejecutando el SP:", err);
+        throw err;
+        
+    } finally {
+        sql.close();
+    }
+}
 ```
 
 ## revisarPropuesta
