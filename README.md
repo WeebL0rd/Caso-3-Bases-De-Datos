@@ -165,9 +165,13 @@ async function callStoredProcedure(data) {
 ## invertir
 
 Parámetros: Ninguno
+
 sessionToken: Es una cadena de carácteres que usará para buscar si el usuario está autenticado con una sesión abierta en la base de datos.
+
 crowdfundingID: Es un integer, y este representa el evento de crowdfunding en el que el usuario desea invertir.
+
 payMethodID: Es un integer, y representa el ID del método de pago seleccionado por el usuario
+
 cantidadInversion: Es un decimal y por aquí se pasa la cantidad que se desea invertir en el evento de crowdfunding
 
 ```javascript
