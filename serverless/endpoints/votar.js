@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const { sequelize, Op, UserSession, Users, Proposal, Voting, confirmedVotes, VoteQuestion, VoteOption, tokens, UserDemographics, VoteDemographic, Log, LogSources, LogType, LogSeverity } = require('./models');
 
 module.exports.votar = async (event) => {
-	const { userID, proposalID, voteID, voteToken, questionID, decision } = JSON.parse(event.body || '{}');
+	const { userID, proposalID, voteID, voteToken, voteQuestionID, optionText } = JSON.parse(event.body || '{}');
 	if (!userID || !proposalID || !voteID || !voteToken || !questionID || !decision ) {
 		return { statusCode: 400, body: JSON.stringify({ error: 'Faltan parámetros' }) };
 	}
@@ -50,9 +50,9 @@ module.exports.votar = async (event) => {
 		}
 		
 		const question = await VoteQuestion.findOne({
-		where: { questionID }});
+		where: { voteQuestionID }});
 		const optionID = await VoteOption.findOne({
-		where: { decision }});
+		where: { questionID, optionText }});
 		
 		const checksum = fn('concat', optionID, votacion.weight , encryptedToken)
 		
