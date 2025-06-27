@@ -50,11 +50,11 @@ module.exports.votar = async (event) => {
 		}
 		
 		const question = await VoteQuestion.findOne({
-		  where: { questionID }
+		where: { questionID }});
 		const optionID = await VoteOption.findOne({
-		  where: { decision }
+		where: { decision }});
 		
-		const checksum = fn('concat', optionID, votacion.weight, , encryptedToken)
+		const checksum = fn('concat', optionID, votacion.weight , encryptedToken)
 		
 		const newComment = await confirmedVotes.create({
         optionVoteID: optionID,
@@ -65,11 +65,11 @@ module.exports.votar = async (event) => {
 		});
 		
 		const logSourceID = await LogSources.findOne({
-		where: { name: 'Motor de votos' }
+		where: { name: 'Motor de votos' }});
 		const logTypeID = await LogType.findOne({
-		where: { name: 'Voto emitido' }
+		where: { name: 'Voto emitido' }});
 		const logSeverityID = await LogSeverity.findOne({
-		where: { name: 'Informativo' }
+		where: { name: 'Informativo' }});
 		
 		checksum = fn('concat', 'Voto agregado en ' + votacion.topic, new Date(), 'PC de ' + usuario.name + usuario.lastname, usuario.name + usuario.lastname, userID, questionID, proposalID, voteID, logSeverityID, logTypeID, logSourceID)
 	
