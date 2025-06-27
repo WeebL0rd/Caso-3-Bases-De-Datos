@@ -168,7 +168,7 @@ const LogSources = sequelize.define('LogSources', {
 });
 
 
-const LogType = sequelize.define('LogType', {
+const LogTypes = sequelize.define('LogTypes', {
   logTypesID: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   name: { type: DataTypes.STRING(45), allowNull: false },
   reference1Description: { type: DataTypes.STRING(75), allowNull: true },
@@ -204,18 +204,18 @@ const Log = sequelize.define('Log', {
 UserSession.belongsTo(User, { foreignKey: 'userID' });
 User.hasMany(UserSession, { foreignKey: 'userID' });
 
-Log.belongsTo(LogSeverity, { foreignKey: 'logSeverityID' });
-LogSeverity.hasMany(Log, { foreignKey: 'logSeverityID' });
+Log.belongsTo(LogsSeverity, { foreignKey: 'logSeverityID' });
+LogsSeverity.hasMany(Log, { foreignKey: 'logSeverityID' });
 
-Log.belongsTo(LogSource, { foreignKey: 'logSourcesID' });
-LogSource.hasMany(Log, { foreignKey: 'logSourcesID' });
+Log.belongsTo(LogSources, { foreignKey: 'logSourcesID' });
+LogSources.hasMany(Log, { foreignKey: 'logSourcesID' });
 
-Log.belongsTo(LogType, { foreignKey: 'logTypesID' });
-LogType.hasMany(Log, { foreignKey: 'logTypesID' });
+Log.belongsTo(LogTypes, { foreignKey: 'logTypesID' });
+LogTypes.hasMany(Log, { foreignKey: 'logTypesID' });
 
 module.exports = {
   sequelize, Op,
-  User, Log, LogSeverity, LogSource, LogType,
+  User, Log, LogsSeverity, LogSources, LogTypes,
   UserSession, Proposal, Comment,
   Voting, VoteOption, VoteDemographic,
   UserProposal, OrgProposal, UserOrganization,
