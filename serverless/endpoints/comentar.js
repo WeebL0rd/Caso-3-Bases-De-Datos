@@ -1,6 +1,6 @@
 
 require('dotenv').config();
-const { sequelize, Op, UserSession, Proposal, Comment } = require('./models');
+const { sequelize, Op, UserSession, Proposal, Comment } = require('./modelos');
 
 module.exports.comentar = async (event) => {
   const { userID, proposalID, title, text } = JSON.parse(event.body || '{}');

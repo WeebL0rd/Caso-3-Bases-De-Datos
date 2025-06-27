@@ -10,7 +10,7 @@ const {
   VoteQuestion,
   VoteOption,
   VoteDemographic
-} = require('./models');
+} = require('./modelos');
 
 module.exports.configurarVotacion = async (event) => {
   const {
