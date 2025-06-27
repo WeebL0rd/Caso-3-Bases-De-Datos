@@ -163,8 +163,14 @@ async function callStoredProcedure(data) {
 ```
 
 ## invertir
-```javascript
 
+Parámetros: Ninguno
+sessionToken: Es una cadena de carácteres que usará para buscar si el usuario está autenticado con una sesión abierta en la base de datos.
+crowdfundingID: Es un integer, y este representa el evento de crowdfunding en el que el usuario desea invertir.
+payMethodID: Es un integer, y representa el ID del método de pago seleccionado por el usuario
+cantidadInversion: Es un decimal y por aquí se pasa la cantidad que se desea invertir en el evento de crowdfunding
+
+```javascript
 //Variables globales de sql
 const sql = require('mssql');
 const config = {
@@ -245,6 +251,73 @@ module.exports.invertir = async (event) => {
     }
 
 };
+
+/*
+E: Un JSON
+S: Un resultMessage y resultCode en un objeto
+Esta función ejecuta el SP y retorna el resultado
+*/ 
+async function callStoredProcedure(data) {
+    const sessionToken = data.sessionToken;
+    const payMethodID = data.payMethodID;
+    const crowdfundingID = data.crowdfundingID;
+    const investment = data.investment;
+
+
+    try {
+        const pool = await sql.connect(config);
+
+        const request = pool.request();
+
+        request
+        .input('CrowdfundingID', sql.Int, crowdfundingID)
+        .input('UserToken', sql.VarChar(110), sessionToken)
+        .input('UserSelectedPayMethodID', sql.Int, payMethodID)
+        .input('CantidadInversion', sql.Decimal(18, 5), investment)
+        .output('ResultMessage', sql.VarChar(100))
+        .output('ResultCode', sql.Int);
+
+        const result = await request.execute('[pvDB].[SP_Invertir]');
+        return result.output;
+        
+    } catch (err) {
+        console.error("Error ejecutando el SP:", err);
+        throw err;
+        
+    } finally {
+        sql.close();
+    }
+}
+
+/*
+E: JSON
+S: Boolean
+Esta función revisa que el JSON enviado tenga los atributos que se esperan recibir en el endpoint
+*/
+function checkBodyStucture(json) {
+  
+    const requiredKeys = ["sessionToken", "payMethodID", "crowdfundingID", "investment"];
+  
+    for (const key of requiredKeys) {
+        if (
+            !(key in json) || 
+            json[key] === null || 
+            json[key] === undefined || 
+            json[key] === ""
+        ) {
+            console.log(`Clave faltante o inválida: ${key}`);
+            return false;
+        }
+    }
+
+    if (json.investment <= 0){
+        console.log("La cantidad a invertir no es válida.");
+        return false;
+    }
+
+    console.log("El JSON es válido");
+    return true;
+}
 ```
 
 ## repartirDividendos
