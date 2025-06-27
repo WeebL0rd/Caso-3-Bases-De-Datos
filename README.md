@@ -27,6 +27,42 @@ Username: CholiRat <br>
 # ENDPOINTS
 ## crearActualizarPropuesta
 Este endpoint permite crear o actualizar una propuesta a partir de un ID de propuesta
+
+Parámetros de entrada  
+proposalID (sql.Int)  
+Identificador entero único de la propuesta a crear o modificar.  
+
+isUser (sql.Bit)  
+Valor booleano que indica si quien realiza la operación es un usuario registrado (1) o un sistema/organización (0).  
+
+userID (sql.Int)  
+Identificador entero del usuario que está realizando la acción, si aplica.  
+
+organizationID (sql.Int)  
+ID entero de la organización asociada a la propuesta.  
+
+proposalTitle (sql.VARCHAR(75))  
+Título corto de la propuesta (máximo 75 caracteres).  
+
+proposalDesc (sql.VARCHAR(300))  
+Descripción detallada de la propuesta (máximo 300 caracteres).  
+
+proposalType (sql.VARCHAR(30))  
+Categoría o tipo de propuesta (máximo 30 caracteres).  
+
+proposalComments (sql.Bit)  
+Booleano que habilita (1) o deshabilita (0) los comentarios sobre la propuesta.  
+
+documents (sql.NVARCHAR(MAX))  
+Texto en formato NVARCHAR que puede incluir rutas, enlaces o estructuras (ej. JSON) con los documentos relacionados.  
+
+demographics (sql.NVARCHAR(MAX))  
+Cadena larga en formato JSON con criterios demográficos requeridos para la propuesta.  
+
+Parámetro de salida  
+ResultMessage (sql.VarChar(100))  
+Mensaje de resultado que informa si la operación fue exitosa o si ocurrió un error (hasta 100 caracteres).
+
 ```javascript
 
 //Variables globales de sql
@@ -157,6 +193,21 @@ async function callStoredProcedure(data) {
 ```
 
 ## revisarPropuesta
+Con este endpoint un usuario puede revisar la propuesta.
+Parámetros de entrada  
+reviewerID (sql.Int)  
+Identificador entero del usuario revisor que está evaluando la propuesta.  
+
+proposalID (sql.Int)  
+ID entero de la propuesta que se desea revisar.  
+
+Parámetros de salida  
+ResultMessage (sql.VarChar(100))  
+Cadena de hasta 100 caracteres que describe el resultado de la revisión, como "Revisión completada" o "Propuesta no encontrada".  
+
+ResultCode (sql.Int)  
+Código de resultado numérico que puede representar el estado de la operación (por ejemplo: 0 = éxito, 1 = error lógico, 2 = error de permisos).
+
 ```javascript
 // Variables globales de conexión SQL
 const sql = require('mssql');
@@ -431,9 +482,127 @@ function checkBodyStucture(json) {
 ```
 
 ## repartirDividendos
+Esta función decide como darle los dividendos a los usuarios inversores.
+
+Parámetro de entrada  
+CrowdfundingID (sql.Int)  
+Identificador entero del evento de crowdfunding sobre el cual se desea consultar o realizar una operación.  
+
+Parámetros de salida  
+ResultMessage (sql.VarChar(100))  
+Mensaje descriptivo de hasta 100 caracteres que resume el resultado de la operación (por ejemplo: "Inversión registrada" o "Evento no válido").  
+
+ResultCode (sql.Int)  
+Código numérico que representa el estado de la operación (ej. 0 = éxito, 1 = error de validación, 2 = no encontrado).
+
+
 ```javascript
 
+// Variables globales de conexión SQL
+const sql = require('mssql');
+const config = {
+  user: 'userSP',
+  password: 'VotoPuravida',
+  server: 'localhost',
+  database: 'pvDB',
+  options: {
+    encrypt: false,
+    trustServerCertificate: true
+  }
+};
 
+module.exports.repartirDividendos = async (event) => {
+    try {
+        // Verificar que exista el body en la petición
+        const requestBodyString = event.body;
+        if (!requestBodyString) {
+            console.log('No se proporcionó body en la solicitud.');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Solicitud inválida: No se proporcionó body en la solicitud." })
+            };
+        }
+
+        // Parsear el body a JSON
+        let requestData;
+        try {
+            requestData = JSON.parse(requestBodyString);
+            console.log('Body:', requestData);
+        } catch (jsonError) {
+            console.error('Error al parsear JSON del body:', jsonError);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Solicitud inválida: El body no es un JSON válido.", error: jsonError.message })
+            };
+        }
+
+        // Validar que solo exista el campo crowdfundingID
+        const keys = Object.keys(requestData);
+        if (keys.length !== 1 || !requestData.hasOwnProperty('crowdfundingID')) {
+            console.log('El body debe contener exclusivamente el campo crowdfundingID.');
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Solicitud inválida: El body debe contener solo el atributo crowdfundingID." })
+            };
+        }
+
+        // Validar crowdfundingID
+        const crowdfundingID = parseInt(requestData.crowdfundingID, 10);
+        if (isNaN(crowdfundingID) || crowdfundingID <= 0) {
+            console.log('crowdfundingID inválido:', requestData.crowdfundingID);
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: "Solicitud inválida: crowdfundingID debe ser un entero mayor que 0." })
+            };
+        }
+
+        // Llamar al procedimiento almacenado con parámetros de entrada/salida
+        const spResult = await callStoredProcedure(crowdfundingID);
+
+        // Revisar resultado del SP
+        if (spResult.ResultCode !== 0) {
+            // El SP devolvió un código de error (>0)
+            return {
+                statusCode: 400,
+                body: JSON.stringify({ message: spResult.ResultMessage })
+            };
+        }
+
+        // Éxito
+        return {
+            statusCode: 200,
+            body: JSON.stringify({ message: spResult.ResultMessage })
+        };
+
+    } catch (error) {
+        console.error('Error en la función repartirDividendos:', error);
+        return {
+            statusCode: 500,
+            body: JSON.stringify({ message: "Error interno del servidor.", error: error.message })
+        };
+    }
+};
+
+// Función auxiliar que invoca el SP [pvDB].[repartirDividendos]
+async function callStoredProcedure(crowdfundingID) {
+    try {
+        const pool = await sql.connect(config);
+        const request = pool.request();
+        // Agregar parámetro de entrada y parámetros de salida (output):contentReference[oaicite:2]{index=2}
+        request
+            .input('CrowdfundingID', sql.Int, crowdfundingID)
+            .output('ResultMessage', sql.VarChar(100))
+            .output('ResultCode', sql.Int);
+        const result = await request.execute('[pvDB].[repartirDividendos]');
+        // Los valores de salida del SP quedan en result
+        return result.output;
+    } catch (err) {
+        console.error('Error ejecutando el SP repartirDividendos:', err);
+        throw err;
+    } finally {
+        sql.close();
+    }
+}
 ```
 
 ## votar
