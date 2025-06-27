@@ -1,4 +1,4 @@
-// endpoints/configurarVotacion.js
+
 require('dotenv').config();
 const crypto = require('crypto');
 const {
@@ -106,7 +106,7 @@ module.exports.configurarVotacion = async (event) => {
       await VoteOption.bulkCreate(opts);
     }
 
-    // Demográficos (ahora con creationDate y deleted)
+    // Demographics
     const demLinks = demographics.map(id => ({
       voteID:              vote.voteID,
       targetDemographicID: id,

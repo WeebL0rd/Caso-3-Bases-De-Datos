@@ -1,4 +1,4 @@
-// endpoints/comentar.js
+
 require('dotenv').config();
 const { sequelize, Op, UserSession, Proposal, Comment } = require('./models');
 

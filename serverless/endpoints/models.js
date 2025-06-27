@@ -1,4 +1,4 @@
-// endpoints/models.js
+
 const { Sequelize, DataTypes, Op } = require('sequelize');
 
 const defineConfig = {
@@ -85,7 +85,7 @@ const VoteOption = sequelize.define('pv_voteOptions', {
   checksum:       { type: DataTypes.BLOB, allowNull: false, field: 'checksum' }
 }, { tableName: 'pv_voteOptions', timestamps: false });
 
-// Demographics link (actualizado)
+// Demographics 
 const VoteDemographic = sequelize.define('pv_voteDemographics', {
   voteDemographicID:   { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true, field: 'voteDemographicID' },
   voteID:              { type: DataTypes.INTEGER, allowNull: false, field: 'voteID' },
@@ -94,7 +94,7 @@ const VoteDemographic = sequelize.define('pv_voteDemographics', {
   deleted:             { type: DataTypes.BOOLEAN, allowNull: false, field: 'deleted' }
 }, { tableName: 'pv_voteDemographics', timestamps: false });
 
-// Proposal ownership
+// Proposal owner
 const UserProposal = sequelize.define('pv_UserProposals', {
   userProposalID: { type: DataTypes.INTEGER, primaryKey: true, field: 'userProposalID' },
   proposalID:     { type: DataTypes.INTEGER, allowNull: false, field: 'proposalID' },
