@@ -606,6 +606,27 @@ async function callStoredProcedure(crowdfundingID) {
 ```
 
 ## votar
+Con esta funcion, todos los usuarios validos pueden votar.
+
+Parámetros de entrada  
+userID  
+Identificador entero del usuario que está emitiendo el voto.  
+
+proposalID  
+Entero que identifica la propuesta asociada al proceso de votación.  
+
+voteID  
+ID entero del evento de votación en curso.  
+
+voteToken  
+Cadena de caracteres que representa el token de seguridad del usuario para validar su participación.  
+
+voteQuestionID  
+Identificador entero de la pregunta específica dentro del evento de votación.  
+
+optionText  
+Texto que representa la opción seleccionada por el votante, como por ejemplo "Sí", "No", o "Me abstengo".
+
 ```javascript
 require('dotenv').config();
 const crypto = require('crypto');
@@ -712,6 +733,19 @@ module.exports.votar = async (event) => {
 ```
 
 ## comentar
+Parámetros de entrada  
+userID  
+Identificador entero del usuario que desea comentar en una propuesta.  
+
+proposalID  
+ID entero de la propuesta sobre la cual se va a registrar el comentario.  
+
+title  
+Título opcional del comentario, normalmente una frase corta que resume su intención o contenido.  
+
+text  
+Contenido principal del comentario; debe ser una cadena de texto con el mensaje que el usuario desea dejar.
+
 ```javascript
 
 require('dotenv').config();
