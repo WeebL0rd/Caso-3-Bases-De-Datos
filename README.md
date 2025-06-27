@@ -23,8 +23,58 @@ Username: CholiRat <br>
 
 <br>
 
-Andrés Alejandro Rodríguez Brizuela <br>
-Carné: 2024256537 <br>
-Username: andres080706 <br>
 
----
+# ENDPOINTS
+## crearActualizarPropuesta
+Este endpoint permite crear o actualizar una propuesta a partir de un ID de propuesta
+```sql
+
+
+```
+
+## revisarPropuesta
+```sql
+
+
+```
+
+## invertir
+```sql
+
+
+```
+
+## repartirDividendos
+```sql
+
+
+```
+
+## votar
+```sql
+
+
+```
+
+## comentar
+```sql
+
+
+```
+
+## listarVotos 
+```sql
+
+
+```
+
+## configurarVotacion
+```sql
+
+
+```
+
+
+
+
+
