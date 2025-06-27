@@ -1,4 +1,4 @@
-const { User, UserSession, sequelize } = require('./models');
+const { User, UserSession, Log, LogsSeverity, LogTypes, LogSources, sequelize } = require('./models');
 const crypto = require('crypto');
 //ඞ
 module.exports.listarVotos = async (event) => {
@@ -18,6 +18,8 @@ module.exports.listarVotos = async (event) => {
         await sequelize.authenticate();
 
         const user = await getUserFromSessionToken(sessionToken);
+
+        // await saveLog(user);
         
         if (user == null) {
             return {
@@ -61,14 +63,53 @@ async function getUserFromSessionToken(token) {
     return result;
 }
 
-async function getLastUserVoteLogs() {
-    const severity = await LogsSeverity.findOne({ where: { name: severityName } });
-    const source = await LogSources.findOne({ where: { name: sourceName } });
-    const type = await LogType.findOne({ where: { name: typeName } });
+async function getLastUserVoteLogs(user) {
+    const severity = await LogsSeverity.findOne({ where: { name: 'Informativo' } });
+    const source = await LogSources.findOne({ where: { name: 'Motor de votos' } });
+    const type = await LogTypes.findOne({ where: { name: 'Voto emitido' } });
+
+
+    let votes = {};
+
+    if (severity && source && type){
+        votes = await Log.findAll({
+            where: {
+                reference11Description: user.userID
+            },
+            limit: 5,
+            order: [['postTime', 'DESC']]
+        });
+    }
+
+    console.log(votes);
+    return votes;
 }
 
-async function saveLog() {
-    
+async function saveLog(user ) {
+    const severity = await LogsSeverity.findOne({ where: { name: 'Informativo' } });
+    const source = await LogSources.findOne({ where: { name: 'Servicio de Usuarios' } });
+    const type = await LogTypes.findOne({ where: { name: 'Consulta auditada' } });
+
+    const checksum = crypto.createHash('sha256')
+    .update(Buffer.from(user.User.name, 'utf8'))
+    .digest();
+
+    transaction = await sequelize.transaction();
+
+    const newLog = await Log.create({
+      description: 'Votos de usuario auditados',
+      computer: 'WEB-SERVER',
+      username: user.User.name,
+      trace: '',
+      reference1Id: user.userID,
+      checksum: checksum,
+      logSeverityID: severity.logSeverityID,
+      logTypesID: type.logTypesID,
+      logSourcesID: source.logSourcesID,
+      // postTime Sequelize.NOW 
+    }, { transaction });
+
+    await transaction.commit();
 }
 
 // function validateUserIdentity(params) {
