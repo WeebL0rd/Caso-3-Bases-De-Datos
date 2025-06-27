@@ -4,7 +4,7 @@ const { sequelize, Op, UserSession, Users, Proposal, Voting, confirmedVotes, Vot
 
 module.exports.votar = async (event) => {
 	const { userID, proposalID, voteID, voteToken, questionID, decision } = JSON.parse(event.body || '{}');
-	if (!userID || !proposalID || !voteID || !voteToken || !questionID, || !decision ) {
+	if (!userID || !proposalID || !voteID || !voteToken || !questionID || !decision ) {
 		return { statusCode: 400, body: JSON.stringify({ error: 'Faltan parámetros' }) };
 	}
 	
